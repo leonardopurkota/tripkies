@@ -45,11 +45,11 @@ main { margin-top: 84px; max-width: var(--max-width); margin-left:auto; margin-r
 
 /* small buttons */
 .btn.small { padding:6px 10px; font-size:14px; }
-.btn.primary.small { background: var(--accent); color:#fff; border:none; }
+.btn.primary.small { background: var(--accent); color:#ffffff; border:none; }
 .btn.small.outline { background:transparent; border:1px solid var(--muted); color:var(--accent-2); }
 
 /* forms */
-input, textarea, select { width:100%; padding:10px; border-radius:8px; border:1px solid #e6dcd3; margin-top:6px; }
+input, textarea, select { width:100%; padding:10px; border-radius:8px; border:1px solid #ffffff; margin-top:6px; }
 
 /* util */
 .muted { color: #8a6a55; }
