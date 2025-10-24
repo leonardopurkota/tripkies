@@ -1,55 +1,418 @@
-/* Conteúdo principal */
-main { margin-top: 84px; max-width: var(--max-width); margin-left:auto; margin-right:auto; padding: 22px; }
+/* ======================================================================
+   TRIPKIES — main-content.css
+   Design moderno, limpo e com personalidade (paleta terrosa / tipografia equilibrada)
+   Mantém as classes existentes do seu HTML
+   ====================================================================== */
 
-/* HERO */
-.hero { display:flex; gap:28px; align-items:center; background: linear-gradient(90deg, rgba(252,240,227,0.9), rgba(255,250,244,0.9)); padding:28px; border-radius:14px; box-shadow: var(--shadow); }
-.hero-content { flex:1; }
-.hero h1 { font-size: clamp(22px, 3.6vw, 40px); color: var(--accent); margin-bottom:8px; }
-.hero p { color: #5a3f32; margin-bottom:16px; }
-.hero-cta { display:flex; gap:10px; }
-.hero-image img { width: 320px; border-radius:12px; object-fit:cover; box-shadow: 0 10px 30px rgba(0,0,0,0.12); }
+/* --------------------------
+   ROOT / VARIÁVEIS (fácil ajuste)
+   -------------------------- */
+:root{
+  --max-width: 1200px;
 
-/* section */
-.section { margin-top: 28px; padding: 18px 0; }
-.section.light { background: transparent; }
+  /* paleta terrosa escolhida */
+  --bg: #fff8f2;
+  --accent: #5c2a12;      /* marrom principal */
+  --accent-dark: #3f1f10; /* marrom mais escuro */
+  --accent-soft: #8b5a33; /* marrom secundário */
+  --gold: #ffcc66;        /* destaque (tripkies) */
+  --muted: #bfa089;       /* bege suave */
+  --card: #fffefc;
+  --glass: rgba(255,255,255,0.85);
+  --shadow: 0 10px 30px rgba(24,12,6,0.10);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --glass-strong: rgba(0,0,0,0.45);
+}
 
-/* section head */
-.section-head { margin-bottom: 12px; }
-.section-head h2 { color: var(--accent); font-size: 22px; margin-bottom:6px; }
-.section-head p { color: #644a3d; }
+/* --------------------------
+   TIPOGRAFIA
+   (Balance: display com corpo legível)
+   -------------------------- */
+body {
+  font-family: "Poppins", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: var(--accent-dark);
+  background: var(--bg);
+  line-height: 1.45;
+}
 
-/* products grid */
-.products-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:18px; margin-top:12px; }
-.product-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow:hidden; display:flex; flex-direction:column; }
-.product-card img { height:180px; width:100%; object-fit:cover; }
-.product-body { padding:12px; display:flex; flex-direction:column; gap:8px; flex:1; }
-.product-body h3 { color: #4b2f23; }
-.product-body .muted { color: #8a6a55; font-size:14px; }
-.product-actions { margin-top:auto; display:flex; gap:8px; align-items:center; }
+/* Headings */
+h1, h2, h3 {
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  color: var(--accent-dark);
+}
 
-/* modal */
-.modal { display:none; position:fixed; z-index:1200; left:0; top:0; width:100%; height:100%; background: rgba(0,0,0,0.6); justify-content:center; align-items:center; padding:20px; }
-.modal-conteudo { background: var(--card); width:720px; max-width:100%; border-radius:12px; padding:22px; box-shadow: var(--shadow); position:relative; max-height:80vh; overflow:auto; }
-.modal-conteudo h2 { color:var(--accent); margin-bottom:10px; }
-.modal-conteudo p { line-height:1.5; color:#3e2a20; margin-bottom:12px; }
-.modal .fechar { position:absolute; right:14px; top:12px; background:transparent; border:none; font-size:22px; cursor:pointer; }
+h1 { font-size: clamp(2rem, 4.8vw, 4rem); }
+h2 { font-size: clamp(1.25rem, 2.2vw, 1.9rem); }
+h3 { font-size: 1.05rem; }
 
-/* CART PANEL (slide from right) */
-.cart-panel { position: fixed; right: -420px; top: 84px; width: 380px; height: calc(100vh - 120px); background: #fff; box-shadow: -12px 0 30px rgba(0,0,0,0.12); border-left: 1px solid rgba(0,0,0,0.04); border-radius: 12px 0 0 12px; padding: 16px; transition: right .32s ease; z-index:1300; display:flex; flex-direction:column; gap:12px; }
-.cart-panel.open { right: 16px; }
-.cart-header { display:flex; justify-content:space-between; align-items:center; }
-.cart-items { flex:1; overflow:auto; padding:6px; }
-.cart-footer { display:flex; flex-direction:column; gap:8px; }
-.cart-total { font-weight:700; color:var(--accent); }
-.cart-actions { display:flex; gap:8px; justify-content:flex-end; }
+/* Utility text */
+.muted { color: var(--muted); }
+.small { font-size: 0.9rem; color: #7a5f4a; }
 
-/* small buttons */
-.btn.small { padding:6px 10px; font-size:14px; }
-.btn.primary.small { background: var(--accent); color:#ffffff; border:none; }
-.btn.small.outline { background:transparent; border:1px solid var(--muted); color:var(--accent-2); }
+/* --------------------------
+   LAYOUT PRINCIPAL
+   -------------------------- */
+main {
+  margin-top: 84px; /* espaço para header fixo */
+  max-width: var(--max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 28px;
+}
 
-/* forms */
-input, textarea, select { width:100%; padding:10px; border-radius:8px; border:1px solid #ffffff; margin-top:6px; }
+/* --------------------------
+   TOPBAR / HEADER (mantém fixo)
+   -------------------------- */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 84px; /* use esse valor no margin-top do main/hero-video */
+  z-index: 1500;
+  background: linear-gradient(180deg, rgba(92,42,18,0.98), rgba(92,42,18,0.95));
+  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  transition: background 240ms ease, backdrop-filter 200ms ease, height 200ms ease;
+  display: flex;
+  align-items: center;
+}
 
-/* util */
-.muted { color: #8a6a55; }
+.topbar.scrolled {
+  background: rgba(63,31,18,0.95);
+  backdrop-filter: blur(4px);
+}
+
+/* inner */
+.topbar-inner {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+/* brand */
+.brand { display:flex; align-items:center; gap:12px; }
+.brand-logo { height:44px; width:auto; display:block; }
+
+/* central nav */
+.top-nav {
+  display: flex;
+  gap: 56px;             /* espaço generoso entre itens centrais */
+  justify-content: center;
+  align-items: center;
+  flex: 1 1 auto;
+  margin-left: 20px;
+}
+.top-nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 10px 6px;
+  border-radius: 8px;
+  transition: transform .18s ease, opacity .18s ease;
+}
+.top-nav a:hover { transform: translateY(-3px); opacity: 0.95; }
+
+/* ações à direita */
+.top-actions { display:flex; align-items:center; gap:14px; }
+
+/* ícone carrinho */
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  display:flex;
+  gap:8px;
+  align-items:center;
+  cursor:pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: background .18s;
+}
+.icon-btn:hover { background: rgba(255,255,255,0.04); }
+
+/* botões gerais */
+.btn {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .14s ease, box-shadow .14s ease;
+}
+
+/* estilo primário (peça/cta) */
+.btn.primary {
+  background: linear-gradient(90deg, var(--accent-soft), var(--accent));
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(92,42,18,0.18);
+}
+.btn.primary:hover { transform: translateY(-3px); }
+
+/* botão em destaque no banner — cor dourada */
+.btn.highlight {
+  background: linear-gradient(90deg, var(--gold), #f0a83b);
+  color: var(--accent-dark);
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  box-shadow: 0 10px 30px rgba(24,12,6,0.18);
+}
+.btn.highlight:hover { transform: scale(1.03); box-shadow: 0 14px 40px rgba(24,12,6,0.22); }
+
+/* --------------------------
+   HERO VIDEO — BANNER PRINCIPAL (elegante e marcante)
+   -------------------------- */
+.hero-video {
+  position: relative;
+  height: calc(100vh - 84px); /* ocupa viewport abaixo do header */
+  max-height: 940px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  text-align: center;
+  border-radius: 0 0 40px 40px;
+  margin-bottom: 28px;
+}
+
+/* video de fundo */
+.background-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  filter: brightness(.6) contrast(0.98) saturate(0.95);
+  transform: scale(1.03);
+  transition: filter .45s ease, transform .6s ease;
+}
+
+/* leve movimento ao hover para dar vida */
+.hero-video:hover .background-video { transform: scale(1.05); filter: brightness(.55) contrast(1); }
+
+/* overlay com degradê para legibilidade (3c) */
+.video-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: linear-gradient(180deg, rgba(10,6,4,0.18) 0%, rgba(0,0,0,0.45) 55%, rgba(0,0,0,0.62) 100%);
+}
+
+/* conteudo central sobre o vídeo */
+.hero-content {
+  position: relative;
+  z-index: 4;
+  max-width: 920px;
+  padding: 40px 44px;
+  border-radius: 14px;
+  backdrop-filter: blur(4px);
+  background: linear-gradient(180deg, rgba(0,0,0,0.18), rgba(0,0,0,0.22));
+  box-shadow: 0 18px 50px rgba(0,0,0,0.45);
+}
+
+/* titulo principal com destaque gold no nome */
+.hero-content h1 {
+  margin: 0 0 8px 0;
+  color: #fff;
+  font-size: clamp(2.4rem, 6.2vw, 4.2rem);
+  line-height: 1;
+  font-weight: 900;
+}
+.hero-content h1 span { color: var(--gold); text-shadow: 0 6px 20px rgba(0,0,0,0.45); }
+
+/* subtitulo */
+.hero-content p {
+  margin: 6px 0 18px 0;
+  color: rgba(255,255,255,0.92);
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+}
+
+/* CTA container no banner */
+.hero-content .ctas {
+  display:flex;
+  gap:16px;
+  justify-content:center;
+  margin-top: 8px;
+}
+
+/* efeito sutil de entrada */
+.fade-in {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: fadeInUp .95s cubic-bezier(.16,.9,.28,1) forwards;
+}
+@keyframes fadeInUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --------------------------
+   SEÇÃO "SABORES" / SEGUNDO BANNER
+   Uma faixa visual logo abaixo do hero com destaque de cards
+   -------------------------- */
+.hero-secondary {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 20px;
+  align-items: center;
+  margin-bottom: 28px;
+}
+.hero-secondary {
+  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,250,244,0.95));
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+.hero-secondary h2 { margin: 0 0 8px 0; color: var(--accent); }
+.hero-secondary p { color: #6a4f3b; }
+
+/* destaque visual à direita — imagem ou mini-video */
+.hero-secondary .hero-image {
+  height: 240px;
+  border-radius: 14px;
+  overflow: hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: linear-gradient(180deg, #f6efe6, #efe1cf);
+  box-shadow: 0 14px 40px rgba(24,12,6,0.08);
+}
+.hero-secondary .hero-image video{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* --------------------------
+   PRODUTOS / CARDS (clean e espaçado)
+   -------------------------- */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: 18px;
+  margin-top: 12px;
+}
+
+.product-card {
+  background: linear-gradient(180deg, #fff, #fffaf6);
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(24,12,6,0.06);
+  overflow: hidden;
+  display:flex;
+  flex-direction:column;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(24,12,6,0.12);
+}
+.product-card img {
+  height: 180px;
+  width:100%;
+  object-fit: cover;
+  display:block;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.product-body { padding: 14px; display:flex; flex-direction:column; gap:8px; flex:1; }
+.product-body h3 { margin:0; color: var(--accent-dark); font-size:1.05rem; }
+.product-body .muted { color: #8b6b53; font-size:0.94rem; }
+
+/* ações do card (preço/cta) alinhadas */
+.product-actions {
+  margin-top:auto;
+  display:flex;
+  gap:10px;
+  align-items:center;
+  justify-content:space-between;
+}
+.price { font-weight:800; color: var(--accent-dark); }
+
+/* --------------------------
+   MODAL (detalhes) refinado
+   -------------------------- */
+.modal-conteudo {
+  width: 760px;
+  padding: 26px;
+  border-radius: 12px;
+}
+.modal-conteudo h2 { font-size:1.35rem; margin-bottom:8px; }
+.modal-conteudo p { color: #4b3428; }
+
+/* --------------------------
+   CART PANEL (slide-in)
+   -------------------------- */
+.cart-panel {
+  right: -420px;
+  top: 104px; /* deixa abaixo do header quando aberto */
+  width: 420px;
+  padding: 18px;
+}
+.cart-panel.open { right: 18px; }
+
+/* --------------------------
+   FORMS
+   -------------------------- */
+input, textarea, select {
+  width:100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: #fff;
+  outline: none;
+}
+input:focus, textarea:focus, select:focus {
+  box-shadow: 0 6px 20px rgba(92,42,18,0.08);
+  border-color: var(--accent-soft);
+}
+
+/* --------------------------
+   MEDIA QUERIES (responsividade)
+   -------------------------- */
+@media (max-width: 1100px) {
+  .top-nav { gap: 36px; }
+  .hero-content { padding: 36px; max-width: 820px; }
+  .second-banner { grid-template-columns: 1fr; }
+  .second-banner .visual { height: 200px; }
+}
+
+@media (max-width: 820px) {
+  .top-nav { display: none; } /* oculta nav central em mobile, usa menu alternativo */
+  .topbar-inner { padding: 0 16px; }
+  .brand-logo { height: 40px; }
+  .hero-video { height: 70vh; }
+  .hero-content { padding: 22px; border-radius: 12px; }
+}
+
+@media (max-width: 520px) {
+  main { padding: 14px; margin-top: 72px; }
+  .hero-content h1 { font-size: 1.8rem; }
+  .hero-content p { font-size: .95rem; }
+  .btn.highlight { padding: 10px 16px; font-size: .98rem; }
+  .product-card img { height: 140px; }
+}
+
+/* --------------------------
+   ACESSIBILIDADE / AJUSTES FINAIS
+   -------------------------- */
+a, button { outline-offset: 3px; }
+button:focus, a:focus { box-shadow: 0 6px 20px rgba(92,42,18,0.12); }
+
+/* Pequenas utilidades */
+.center { display:flex; align-items:center; justify-content:center; }
+.hidden { display:none !important; }
