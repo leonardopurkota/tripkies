@@ -1,3 +1,8 @@
+/* =====================================================
+   TRIPKIES — main.js
+   Funções organizadas e padronizadas
+   ===================================================== */
+
 /* ---------- UTIL ---------- */
 function scrollToSection(id) {
   const el = document.getElementById(id);
@@ -6,19 +11,29 @@ function scrollToSection(id) {
 
 /* ---------- MODAIS ---------- */
 function openModal(id) {
-  const modal = document.getElementById(`modal-${id}`);
-  if (modal) modal.style.display = 'flex';
+  const modal = document.getElementById(id) || document.getElementById(`modal-${id}`);
+  if (modal) {
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden'; // trava o scroll
+  }
 }
 
 function closeModal(id) {
-  const modal = document.getElementById(`modal-${id}`);
-  if (modal) modal.style.display = 'none';
+  const modal = document.getElementById(id) || document.getElementById(`modal-${id}`);
+  if (modal) {
+    modal.style.display = 'none';
+    document.body.style.overflow = ''; // libera o scroll
+  }
 }
 
-/* fechar modal ao clicar fora */
-window.addEventListener('click', function (e) {
-  const modals = document.querySelectorAll('.modal');
-  modals.forEach(m => { if (e.target === m) m.style.display = 'none'; });
+// Fechar modais ao clicar fora
+window.addEventListener('click', (e) => {
+  document.querySelectorAll('.modal').forEach(m => {
+    if (e.target === m) {
+      m.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+  });
 });
 
 /* ---------- CARRINHO ---------- */
@@ -37,7 +52,7 @@ function addToCart(name, price) {
   else cart.push({ name, price, qty: 1 });
   saveCart();
   flashMessage(`${name} adicionado ao carrinho`);
-  openCart(); // abre o painel para feedback
+  openCart();
 }
 
 function removeFromCart(index) {
@@ -56,18 +71,22 @@ function renderCart() {
   const container = document.getElementById('cart-items');
   const totalEl = document.getElementById('cart-total');
   if (!container) return;
+
   container.innerHTML = '';
   let total = 0;
+
   if (cart.length === 0) {
     container.innerHTML = '<p>Seu carrinho está vazio.</p>';
   } else {
     cart.forEach((it, idx) => {
       const line = document.createElement('div');
-      line.style.display = 'flex';
-      line.style.justifyContent = 'space-between';
-      line.style.alignItems = 'center';
-      line.style.gap = '8px';
-      line.style.marginBottom = '8px';
+      Object.assign(line.style, {
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: '8px',
+        marginBottom: '8px'
+      });
       line.innerHTML = `
         <div style="min-width:120px;">${it.qty}x ${it.name}</div>
         <div style="min-width:70px;">R$ ${(it.price * it.qty).toFixed(2)}</div>
@@ -81,28 +100,30 @@ function renderCart() {
       total += it.price * it.qty;
     });
   }
+
   if (totalEl) totalEl.textContent = `Total: R$ ${total.toFixed(2)}`;
   updateCartCount();
 }
 
-/* mensagem curta */
+/* ---------- MENSAGEM FLASH ---------- */
 function flashMessage(msg) {
   const el = document.createElement('div');
   el.textContent = msg;
-  el.style.position = 'fixed';
-  el.style.right = '20px';
-  el.style.bottom = '20px';
-  el.style.background = 'rgba(0,0,0,0.85)';
-  el.style.color = '#fff';
-  el.style.padding = '10px 14px';
-  el.style.borderRadius = '8px';
-  el.style.zIndex = 2000;
+  Object.assign(el.style, {
+    position: 'fixed',
+    right: '20px',
+    bottom: '20px',
+    background: 'rgba(0,0,0,0.85)',
+    color: '#fff',
+    padding: '10px 14px',
+    borderRadius: '8px',
+    zIndex: 2000
+  });
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 1600);
 }
 
 /* ---------- CART PANEL ---------- */
-const cartPanel = document.getElementById('cart-panel');
 const cartToggle = document.getElementById('cart-toggle');
 
 function openCart() {
@@ -117,11 +138,9 @@ function closeCart() {
 
 function toggleCart() {
   const panel = document.getElementById('cart-panel');
-  if (!panel) return;
-  panel.classList.toggle('open');
+  if (panel) panel.classList.toggle('open');
 }
 
-/* abrir / fechar com botão */
 if (cartToggle) cartToggle.addEventListener('click', toggleCart);
 
 function updateCartCount() {
@@ -132,8 +151,12 @@ function updateCartCount() {
 
 /* ---------- WHATSAPP ---------- */
 function sendWhatsApp() {
-  if (cart.length === 0) { alert('Seu carrinho está vazio!'); return; }
-  const numeroWhats = '554197825384'; // troque para seu número (formato internacional sem +)
+  if (cart.length === 0) {
+    alert('Seu carrinho está vazio!');
+    return;
+  }
+
+  const numeroWhats = '554197825384';
   const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
   const itemsText = cart.map(i => `${i.qty}x ${i.name} - R$ ${(i.price * i.qty).toFixed(2)}`).join('%0A');
   const text = `🍪 *Novo pedido Tripkies* 🍪%0A%0A${itemsText}%0A%0A💰 Total: R$ ${total.toFixed(2)}`;
@@ -142,7 +165,10 @@ function sendWhatsApp() {
 
 /* ---------- ORDER FORM ---------- */
 function openOrderForm() {
-  if (cart.length === 0) { alert('Seu carrinho está vazio!'); return; }
+  if (cart.length === 0) {
+    alert('Seu carrinho está vazio!');
+    return;
+  }
   document.getElementById('order-form').style.display = 'flex';
 }
 
@@ -155,7 +181,11 @@ function submitOrder(e) {
   const nome = document.getElementById('nome').value.trim();
   const endereco = document.getElementById('endereco').value.trim();
   const pagamento = document.getElementById('pagamento').value;
-  if (!nome || !endereco || !pagamento) { alert('Preencha todos os campos'); return; }
+
+  if (!nome || !endereco || !pagamento) {
+    alert('Preencha todos os campos');
+    return;
+  }
 
   const numeroWhats = '554197825384';
   const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
@@ -170,8 +200,40 @@ function submitOrder(e) {
   closeCart();
 }
 
-/* init */
+/* ---------- LOGIN / CADASTRO ---------- */
 document.addEventListener('DOMContentLoaded', () => {
   renderCart();
   updateCartCount();
+
+  const showRegister = document.getElementById('show-register');
+  const showLogin = document.getElementById('show-login');
+  const loginForm = document.getElementById('login-form');
+  const registerForm = document.getElementById('register-form');
+  const loginTitle = document.getElementById('modal-login-title');
+
+  if (showRegister) {
+    showRegister.addEventListener('click', (e) => {
+      e.preventDefault();
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'block';
+      loginTitle.textContent = 'Criar Conta';
+    });
+  }
+
+  if (showLogin) {
+    showLogin.addEventListener('click', (e) => {
+      e.preventDefault();
+      registerForm.style.display = 'none';
+      loginForm.style.display = 'block';
+      loginTitle.textContent = 'Entrar';
+    });
+  }
 });
+
+const cartDropdown = document.getElementById('cart-dropdown');
+
+if (cartToggle && cartDropdown) {
+  cartToggle.addEventListener('click', () => {
+    cartDropdown.classList.toggle('active');
+  });
+}
