@@ -29,6 +29,11 @@
       integrity="sha384-jLKHWM3JRmfMU0A5x5AkjWkw/EYfGUAGagvnfryNV3F9VqM98XiIH7VBGVoxVSc7"
       crossorigin="anonymous"
     />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
   </head>
 
   <body>
@@ -185,7 +190,7 @@
             <p class="muted">Gengibre, Amendoim, Canela e Mel</p>
             <div class="product-actions">
               <button class="btn small" onclick="openModal('modal-zaki')">Ver mais</button>
-              <button class="btn highlight small" onclick="addToCart('Zaki Spice', 11)">Adicionar — R$11,00</button>
+              <button class="btn highlight small" onclick="addToCart('Zaki Spice', 11)">Adicionar — R$12,00</button>
             </div>
           </div>
         </article>
@@ -198,7 +203,7 @@
             <p class="muted">Xarope de Maple, Nozes Brancas e Pó Rubi</p>
             <div class="product-actions">
               <button class="btn small" onclick="openModal('modal-maple')">Ver mais</button>
-              <button class="btn highlight small" onclick="addToCart('Maple Syrup', 11)">Adicionar — R$11,00</button>
+              <button class="btn highlight small" onclick="addToCart('Maple Syrup', 11)">Adicionar — R$12,00</button>
             </div>
           </div>
         </article>
@@ -211,7 +216,7 @@
             <p class="muted">Cookie de Açaí com Chocolate Branco</p>
             <div class="product-actions">
               <button class="btn small" onclick="openModal('modal-estrela')">Ver mais</button>
-              <button class="btn highlight small" onclick="addToCart('Estrela Amazônica', 11)">Adicionar — R$11,00</button>
+              <button class="btn highlight small" onclick="addToCart('Estrela Amazônica', 11)">Adicionar — R$12,00</button>
             </div>
           </div>
         </article>
@@ -224,7 +229,7 @@
             <p class="muted">Chocolate Meio Amargo, Avelã e Caramelo Salgado</p>
             <div class="product-actions">
               <button class="btn small" onclick="openModal('modal-belgique')">Ver mais</button>
-              <button class="btn highlight small" onclick="addToCart('Belgique', 11)">Adicionar — R$11,00</button>
+              <button class="btn highlight small" onclick="addToCart('Belgique', 11)">Adicionar — R$12,00</button>
             </div>
           </div>
         </article>
@@ -237,7 +242,7 @@
             <p class="muted">Matcha, Gergelim Preto e Cream Cheese</p>
             <div class="product-actions">
               <button class="btn small" onclick="openModal('modal-matcha')">Ver mais</button>
-              <button class="btn highlight small" onclick="addToCart('Matcha', 11)">Adicionar — R$11,00</button>
+              <button class="btn highlight small" onclick="addToCart('Matcha', 11)">Adicionar — R$12,00</button>
             </div>
           </div>
         </article>
@@ -250,7 +255,7 @@
             <p class="muted">Dourado com Melado, Coco e Recheio de Nutella</p>
             <div class="product-actions">
               <button class="btn small" onclick="openModal('modal-anzac')">Ver mais</button>
-              <button class="btn highlight small" onclick="addToCart('Cookie ANZAC', 11)">Adicionar — R$11,00</button>
+              <button class="btn highlight small" onclick="addToCart('Cookie ANZAC', 11)">Adicionar — R$12,00</button>
             </div>
           </div>
         </article>
@@ -326,41 +331,140 @@
       </div>
     </section>
 
-    <!-- ============================= -->
-      <!-- 🌍 SOBRE -->
-      <!-- ============================= -->
-      <section id="about" class="section light">
-        <div class="section-inner">
-          <h2>Quem Somos</h2>
-          <p>
-            A Tripkies nasceu do desejo de transformar cookies em verdadeiras
-            experiências culturais. Somos contadores de histórias através do
-            sabor. Cada receita é pensada para unir tradição e inovação,
-            valorizando a riqueza do Brasil e a diversidade do mundo.
-          </p>
-        </div>
-      </section>
+<!-- ========== MODAL: Escolha de entrega (checkout) ========== -->
+<div id="modal-delivery" class="modal" aria-hidden="true">
+  <div class="modal-conteudo" role="dialog" aria-labelledby="modal-delivery-title">
+    <button class="fechar" onclick="closeModal('modal-delivery')" aria-label="Fechar">×</button>
+    <h2 id="modal-delivery-title">Escolha de Entrega</h2>
 
-      <!-- ============================= -->
-      <!-- 📞 CONTATO -->
-      <!-- ============================= -->
-      <section id="contact" class="section contact">
-        <div class="section-inner">
-          <h2>Contato</h2>
-          <p>
-            Email:
-            <a href="mailto:contato@tripkies.com">contato@tripkies.com</a> •
-            WhatsApp:
-            <a
-              href="https://wa.me/554197825384"
-              target="_blank"
-              rel="noopener"
-              >(41) 97825-5384</a
-            >
-          </p>
-        </div>
-      </section>
-    </main>
+    <div class="checkout-step">
+      <label>
+        <input type="radio" name="delivery-type" value="pickup" checked>
+        Retirar na loja (gratuito)
+      </label>
+      <label style="display:block; margin-top:8px;">
+        <input type="radio" name="delivery-type" value="home">
+        Entregar em casa (gratuito)
+      </label>
+
+      <div id="delivery-address-container" style="display:none; margin-top:12px;">
+        <label for="delivery-address">Endereço de entrega</label>
+        <input id="delivery-address" type="text" placeholder="Rua, número, complemento, cidade" />
+      </div>
+
+      <div style="margin-top:14px;">
+        <p class="muted">Frete: <strong>Gratuito</strong></p>
+        <p class="muted">Subtotal: <span id="checkout-subtotal">R$ 0,00</span></p>
+        <p class="muted">Total: <strong id="checkout-total">R$ 0,00</strong></p>
+      </div>
+
+      <div style="margin-top:18px; display:flex; gap:10px; justify-content:flex-end;">
+        <button class="btn outline" onclick="closeModal('modal-delivery')">Voltar</button>
+        <button class="btn highlight" id="to-payment-btn">Escolher Pagamento</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL: Pagamento ========== -->
+<div id="modal-payment" class="modal" aria-hidden="true">
+  <div class="modal-conteudo" role="dialog" aria-labelledby="modal-payment-title">
+    <button class="fechar" onclick="closeModal('modal-payment')" aria-label="Fechar">×</button>
+    <h2 id="modal-payment-title">Forma de Pagamento</h2>
+
+    <div style="margin-top:8px;">
+      <label><input type="radio" name="payment-method" value="pix" checked> Pix</label><br>
+      <label><input type="radio" name="payment-method" value="card"> Cartão</label><br>
+      <label><input type="radio" name="payment-method" value="cash"> Dinheiro na Entrega</label>
+    </div>
+
+    <div id="card-form" style="display:none; margin-top:12px;">
+      <label>Nome no cartão</label>
+      <input type="text" id="card-name" placeholder="Nome impresso no cartão" />
+      <label>Número do cartão</label>
+      <input type="text" id="card-number" placeholder="0000 0000 0000 0000" />
+      <label>Validade / CVC</label>
+      <input type="text" id="card-meta" placeholder="MM/AA • CVC" />
+    </div>
+
+    <div style="margin-top:16px; display:flex; gap:10px; justify-content:flex-end;">
+      <button class="btn outline" onclick="closeModal('modal-payment')">Voltar</button>
+      <button class="btn highlight" id="confirm-order-btn">Confirmar Pedido</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL: Pedido confirmado ========== -->
+<div id="modal-success" class="modal" aria-hidden="true">
+  <div class="modal-conteudo" role="dialog" aria-labelledby="modal-success-title">
+    <button class="fechar" onclick="closeModal('modal-success')" aria-label="Fechar">×</button>
+    <h2 id="modal-success-title">🍪 Pedido Confirmado!</h2>
+    <p id="success-message">Obrigado! Seu pedido foi registrado com sucesso.</p>
+    <div style="margin-top:14px; display:flex; justify-content:flex-end;">
+      <button class="btn highlight" onclick="closeModal('modal-success')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================= -->
+<!-- 🌟 QUEM SOMOS (layout estilo Starbucks) -->
+<!-- ============================= -->
+<section id="about" class="quem-somos">
+  <img src="./src/assets/quem-somos.jpg" alt="Nossa história">
+  <div class="texto">
+    <h2>Quem Somos</h2>
+    <p>
+      A Tripkies nasceu do desejo de transformar cookies em experiências de viagem.  
+      Cada sabor foi inspirado em uma cultura diferente — levando você a uma viagem gastronômica a cada mordida.
+    </p>
+    <a href="#" class="btn">Saiba mais</a>
+  </div>
+</section>
+
+<!-- ============================= -->
+<!-- 🖤 RODAPÉ ESCURO LUXUOSO -->
+<!-- ============================= -->
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-links">
+      <h4>Sobre</h4>
+      <ul>
+        <li><a href="#about">Quem Somos</a></li>
+        <li><a href="#products">Nossos Produtos</a></li>
+        <li><a href="#contact">Contato</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-links">
+      <h4>Ajuda</h4>
+      <ul>
+        <li><a href="#">Política de Privacidade</a></li>
+        <li><a href="#">Termos e Condições</a></li>
+        <li><a href="#">Entrega & Pagamento</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-social">
+      <h4>Nos siga</h4>
+      <div class="social-icons">
+        <a href="https://www.instagram.com/tripkies.br?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="https://wa.me/5541995825384" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2025 Tripkies. Todos os direitos reservados.</p>
+    <p>Feito com 🍪 e amor.</p>
+  </div>
+
+  <!-- 🔽 BLOCO INFERIOR CENTRALIZADO -->
+  <div class="footer-bottom-brand">
+    <img src="src/assets/logo.png" alt="Tripkies logo" />
+    <p>TRIPKIES® COOKIES ARTESANAIS</p>
+  </div>
+</footer>
 
     <!-- ============================= -->
     <!-- 📜 SCRIPT PRINCIPAL -->

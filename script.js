@@ -237,3 +237,224 @@ if (cartToggle && cartDropdown) {
     cartDropdown.classList.toggle('active');
   });
 }
+
+// ---------- DROPDOWN DO CARRINHO ----------
+document.addEventListener("DOMContentLoaded", () => {
+  const cartToggle = document.getElementById("cart-toggle");
+  const cartDropdown = document.getElementById("cart-dropdown");
+
+  cartToggle.addEventListener("click", (e) => {
+    e.stopPropagation();
+    cartDropdown.classList.toggle("show");
+  });
+
+  // Fecha se clicar fora
+  document.addEventListener("click", (e) => {
+    if (!cartDropdown.contains(e.target) && !cartToggle.contains(e.target)) {
+      cartDropdown.classList.remove("show");
+    }
+  });
+});
+
+
+/* ======= CHECKOUT FLOW: entrega / pagamento / confirmação ======= */
+
+(function () {
+  // ---------- helpers para abrir/fechar modais (não sobrescreve se já existir) ----------
+  if (typeof openModal === 'undefined') {
+    window.openModal = function (id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.style.display = 'flex';
+      el.setAttribute('aria-hidden', 'false');
+      // lock body scroll
+      document.body.style.overflow = 'hidden';
+    };
+  }
+
+  if (typeof closeModal === 'undefined') {
+    window.closeModal = function (id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.style.display = 'none';
+      el.setAttribute('aria-hidden', 'true');
+      // unlock body scroll
+      document.body.style.overflow = '';
+    };
+  }
+
+  // ---------- abrir/fechar mini-dropdown do carrinho ----------
+  const cartToggle = document.getElementById('cart-toggle');
+  const cartDropdown = document.getElementById('cart-dropdown');
+
+  function toggleCartDropdown() {
+    if (!cartDropdown) return;
+    if (cartDropdown.style.display === 'block') {
+      cartDropdown.style.display = 'none';
+    } else {
+      renderCart(); // atualiza conteúdo antes de abrir
+      cartDropdown.style.display = 'block';
+    }
+  }
+
+  if (cartToggle) {
+    cartToggle.addEventListener('click', function (e) {
+      e.stopPropagation();
+      toggleCartDropdown();
+    });
+  }
+  // click fora fecha
+  document.addEventListener('click', function (e) {
+    if (!cartDropdown) return;
+    if (!cartDropdown.contains(e.target) && e.target !== cartToggle) {
+      cartDropdown.style.display = 'none';
+    }
+  });
+
+  // ---------- verificar login simples ----------
+  function isLogged() {
+    return !!localStorage.getItem('tripkies_user');
+  }
+
+  function requireLoginThen(next) {
+    if (isLogged()) return next();
+    // abre modal de login (seu modal já existe)
+    openModal('modal-login');
+    // quando o login ocorrer, o código abaixo tentará continuar:
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+      loginForm.addEventListener('submit', function handler(e) {
+        e.preventDefault();
+        // pega email simples e cria user
+        const email = (document.getElementById('email') || {}).value || 'cliente@tripkies';
+        localStorage.setItem('tripkies_user', JSON.stringify({ email }));
+        closeModal('modal-login');
+        loginForm.removeEventListener('submit', handler);
+        // proceed
+        next();
+      });
+    }
+  }
+
+  // ---------- Finalizar Pedido (botão do mini-carrinho) ----------
+  const checkoutBtn = document.getElementById('checkout-btn');
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener('click', function () {
+      requireLoginThen(function () {
+        // prepara valores e abre modal de delivery
+        updateCheckoutTotals();
+        openModal('modal-delivery');
+      });
+    });
+  }
+
+  // ---------- Delivery modal interactions ----------
+  function updateCheckoutTotals() {
+    const subtotalEl = document.getElementById('checkout-subtotal');
+    const totalEl = document.getElementById('checkout-total');
+    let subtotal = 0;
+    if (Array.isArray(cart)) {
+      subtotal = cart.reduce((s, it) => s + (it.price * (it.qty || 1)), 0);
+    }
+    // frete gratuito (escolha C)
+    const frete = 0;
+    if (subtotalEl) subtotalEl.textContent = `R$ ${subtotal.toFixed(2)}`;
+    if (totalEl) totalEl.textContent = `R$ ${(subtotal + frete).toFixed(2)}`;
+  }
+
+  const deliveryRadios = document.getElementsByName('delivery-type');
+  const addressContainer = document.getElementById('delivery-address-container');
+  if (deliveryRadios && deliveryRadios.length) {
+    deliveryRadios.forEach(r => {
+      r.addEventListener('change', () => {
+        const v = document.querySelector('input[name="delivery-type"]:checked').value;
+        if (v === 'home') addressContainer.style.display = 'block';
+        else addressContainer.style.display = 'none';
+        updateCheckoutTotals();
+      });
+    });
+  }
+
+  const toPaymentBtn = document.getElementById('to-payment-btn');
+  if (toPaymentBtn) {
+    toPaymentBtn.addEventListener('click', function () {
+      // se escolher delivery = home e não preencheu endereço -> alerta e retorna
+      const deliveryType = document.querySelector('input[name="delivery-type"]:checked').value;
+      if (deliveryType === 'home') {
+        const addr = (document.getElementById('delivery-address') || {}).value || '';
+        if (!addr.trim()) {
+          alert('Por favor, informe o endereço para entrega.');
+          return;
+        }
+      }
+      // abre modal pagamento
+      closeModal('modal-delivery');
+      openModal('modal-payment');
+      // atualiza formulário de pagamento (esconde/mostra campo cartão)
+      handlePaymentMethodChange();
+    });
+  }
+
+  // ---------- Payment interactions ----------
+  function handlePaymentMethodChange() {
+    const method = document.querySelector('input[name="payment-method"]:checked')?.value || 'pix';
+    const cardForm = document.getElementById('card-form');
+    if (method === 'card') cardForm.style.display = 'block';
+    else cardForm.style.display = 'none';
+  }
+
+  const paymentRadios = document.getElementsByName('payment-method');
+  if (paymentRadios && paymentRadios.length) {
+    paymentRadios.forEach(r => r.addEventListener('change', handlePaymentMethodChange));
+  }
+
+  // Confirmar pedido
+  const confirmOrderBtn = document.getElementById('confirm-order-btn');
+  if (confirmOrderBtn) {
+    confirmOrderBtn.addEventListener('click', function () {
+      // validações mínimas (se cartão selecionado, exige preencher)
+      const method = document.querySelector('input[name="payment-method"]:checked')?.value;
+      if (method === 'card') {
+        const name = (document.getElementById('card-name') || {}).value || '';
+        const num = (document.getElementById('card-number') || {}).value || '';
+        const meta = (document.getElementById('card-meta') || {}).value || '';
+        if (!name.trim() || !num.trim() || !meta.trim()) {
+          alert('Por favor preencha os dados do cartão.');
+          return;
+        }
+      }
+
+      // simula processamento
+      closeModal('modal-payment');
+
+      // monta resumo para o usuário
+      const subtotal = cart.reduce((s, it) => s + (it.price * (it.qty || 1)), 0);
+      const frete = 0;
+      const total = subtotal + frete;
+
+      const deliveryType = document.querySelector('input[name="delivery-type"]:checked')?.value || 'pickup';
+      const address = (document.getElementById('delivery-address') || {}).value || '';
+
+      const successMsg = document.getElementById('success-message');
+      if (successMsg) {
+        successMsg.innerHTML = `
+          Pedido confirmado!<br>
+          <strong>Itens:</strong> ${cart.map(i => `${i.qty}x ${i.name}`).join(', ')}<br>
+          <strong>Entrega:</strong> ${ deliveryType === 'pickup' ? 'Retirar na loja' : ('Entrega em casa — ' + address) }<br>
+          <strong>Total:</strong> R$ ${total.toFixed(2)}
+        `;
+      }
+
+      // limpa carrinho e atualiza display
+      cart = [];
+      saveCart(); // sua função existente
+      // mostra modal de sucesso
+      openModal('modal-success');
+    });
+  }
+
+  // ---------- hookup do login/register quick (se você ainda não tiver) ----------
+  // quando usuário fizer logout/limpar, basta remover 'tripkies_user' do localStorage
+  // Ex: localStorage.removeItem('tripkies_user');
+
+})();

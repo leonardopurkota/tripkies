@@ -380,26 +380,55 @@ main {
 }
 .alt-action a:hover { text-decoration: underline; }
 
-/* --------------------------
-   CARRINHO LATERAL
--------------------------- */
+/* ================================
+   🛒 MINI-CARRINHO (DROPDOWN FIXO)
+   ================================ */
 .cart-dropdown {
   position: absolute;
-  top: 60px;
+  top: 70px; /* abaixo do header fixo */
   right: 0;
-  width: 280px;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+  background: #fffaf5;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  border-radius: 16px;
   padding: 1rem;
-  border-radius: 12px;
+  width: 280px;
+  z-index: 1000;
   display: none;
-  z-index: 999;
+  flex-direction: column;
+  gap: 0.75rem;
+  transition: all 0.3s ease;
 }
 
-.cart-dropdown.active {
-  display: block;
+/* Mostra o carrinho quando ativo */
+.cart-dropdown.show {
+  display: flex;
+  animation: fadeInCart 0.3s ease forwards;
 }
+
+@keyframes fadeInCart {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.cart-dropdown h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: #5a3e2b;
+  font-weight: 700;
+}
+
+.cart-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-top: 1px solid #e5d5c0;
+  padding-top: 0.75rem;
+}
+
+.cart-footer .btn {
+  width: 100%;
+}
+
 
 /* --------------------------
    ANIMAÇÕES
@@ -416,3 +445,71 @@ main {
   from { opacity:0; transform: translateY(-15px); }
   to { opacity:1; transform: translateY(0); }
 }
+
+/* ============================
+   QUEM SOMOS (novo layout)
+============================ */
+.quem-somos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  background-color: var(--beige);
+  color: var(--accent-dark);
+  padding: 6rem 8%;
+}
+
+.quem-somos img {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  justify-self: center;
+}
+
+.quem-somos .texto {
+  max-width: 500px;
+}
+
+.quem-somos h2 {
+  font-size: 2.5rem;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.quem-somos p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #3c2f2f;
+  margin-bottom: 2rem;
+}
+
+.quem-somos .btn {
+  background: var(--gold);
+  color: var(--accent-dark);
+  padding: 0.9rem 2rem;
+  border-radius: 999px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.quem-somos .btn:hover {
+  background: var(--accent);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
